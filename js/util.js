@@ -45,4 +45,4 @@ const zfill = (num, places) => {
   return zeroesCount > 0 ? (new Array(zeroesCount + 1)).join('0') + num : '' + num;
 }
 
-export {getRandomInt, getRandomFloat, getRandomArrayElem, shuffle, zfill};
+export { getRandomInt, getRandomFloat, getRandomArrayElem, shuffle, zfill };

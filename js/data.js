@@ -115,4 +115,4 @@ const generateOffers = () => {
   return offers;
 };
 
-export {generateOffers};
+export { generateOffers };

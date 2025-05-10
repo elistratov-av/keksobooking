@@ -1,4 +1,3 @@
-const MAX_PRICE = 1000000;
 const PALACE_MIN_PRICE = 10000;
 const FLAT_MIN_PRICE = 1000;
 const HOUSE_MIN_PRICE = 5000;
@@ -11,6 +10,8 @@ const priceElem = noticeForm.querySelector('#price');
 const timeinElem = noticeForm.querySelector('#timein');
 const timeoutElem = noticeForm.querySelector('#timeout');
 const addressElem = noticeForm.querySelector('#address');
+const roomNumberElem = noticeForm.querySelector('#room_number');
+const capacityElem = noticeForm.querySelector('#capacity');
 
 const disableNoticeForm = (disabled) => {
   if (disabled) {
@@ -28,7 +29,6 @@ const disableNoticeForm = (disabled) => {
 const onTypeChange = function () {
   const type = typeElem.value;
 
-  priceElem.max = MAX_PRICE;
   switch (type) {
     case 'palace':
       priceElem.min = PALACE_MIN_PRICE;
@@ -71,5 +71,47 @@ onTimeinChange();
 const updateAddress = ({lat, lng}) => {
   addressElem.value = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
 };
+
+const checkCapacityByRoomNum = (capacity, roomNumber) => {
+  switch (roomNumber) {
+    case 1:
+      return capacity === 1;
+    case 2:
+      return capacity === 1 || capacity === 2;
+    case 3:
+      return capacity === 1 || capacity === 2 || capacity === 3;
+    case 100:
+      return capacity === 0;
+  }
+  return false;
+}
+
+const validateCapacityByRoomNum = (capacityElem, roomNumberElem) => {
+  const capacity = capacityElem.value;
+  const roomNumber =roomNumberElem.value;
+  const isValid = checkCapacityByRoomNum(+capacity, +roomNumber);
+
+  if (isValid) {
+    capacityElem.setCustomValidity('');
+  } else {
+    capacityElem.setCustomValidity('Выбранное количество гостей не подходит под количество комнат');
+  }
+  capacityElem.reportValidity();
+
+  return isValid;
+}
+
+const onValidateCapacity = () => {
+  validateCapacityByRoomNum(capacityElem, roomNumberElem);
+};
+
+roomNumberElem.addEventListener('change', onValidateCapacity);
+capacityElem.addEventListener('change', onValidateCapacity);
+
+noticeForm.addEventListener('submit', (evt) => {
+  if (!validateCapacityByRoomNum(capacityElem, roomNumberElem)) {
+    evt.preventDefault();
+  }
+});
 
 export { disableNoticeForm, updateAddress };

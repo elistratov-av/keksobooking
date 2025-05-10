@@ -6,50 +6,70 @@ const HOTEL_MIN_PRICE = 3000;
 const BUNGALOW_MIN_PRICE = 0;
 
 const noticeForm = document.querySelector('.ad-form');
-const typeElement = noticeForm.querySelector('#type');
-const priceElement = noticeForm.querySelector('#price');
-const timeinElement = noticeForm.querySelector('#timein');
-const timeoutElement = noticeForm.querySelector('#timeout');
+const typeElem = noticeForm.querySelector('#type');
+const priceElem = noticeForm.querySelector('#price');
+const timeinElem = noticeForm.querySelector('#timein');
+const timeoutElem = noticeForm.querySelector('#timeout');
+const addressElem = noticeForm.querySelector('#address');
+
+const disableNoticeForm = (disabled) => {
+  if (disabled) {
+    noticeForm.classList.add('ad-form--disabled');
+  } else {
+    noticeForm.classList.remove('ad-form--disabled');
+  }
+
+  const elems = noticeForm.querySelectorAll('fieldset');
+  for (let i = 0; i < elems.length; ++i) {
+    elems[i].disabled = disabled;
+  }
+}
 
 const onTypeChange = function () {
-  const type = typeElement.value;
+  const type = typeElem.value;
 
-  priceElement.max = MAX_PRICE;
+  priceElem.max = MAX_PRICE;
   switch (type) {
     case 'palace':
-      priceElement.min = PALACE_MIN_PRICE;
-      priceElement.placeholder = PALACE_MIN_PRICE;
+      priceElem.min = PALACE_MIN_PRICE;
+      priceElem.placeholder = PALACE_MIN_PRICE;
       break;
     case 'flat':
-      priceElement.min = FLAT_MIN_PRICE;
-      priceElement.placeholder = FLAT_MIN_PRICE;
+      priceElem.min = FLAT_MIN_PRICE;
+      priceElem.placeholder = FLAT_MIN_PRICE;
       break;
     case 'house':
-      priceElement.min = HOUSE_MIN_PRICE;
-      priceElement.placeholder = HOUSE_MIN_PRICE;
+      priceElem.min = HOUSE_MIN_PRICE;
+      priceElem.placeholder = HOUSE_MIN_PRICE;
       break;
     case 'hotel':
-      priceElement.min = HOTEL_MIN_PRICE;
-      priceElement.placeholder = HOTEL_MIN_PRICE;
+      priceElem.min = HOTEL_MIN_PRICE;
+      priceElem.placeholder = HOTEL_MIN_PRICE;
       break;
     case 'bungalow':
-      priceElement.min = BUNGALOW_MIN_PRICE;
-      priceElement.placeholder = BUNGALOW_MIN_PRICE;
+      priceElem.min = BUNGALOW_MIN_PRICE;
+      priceElem.placeholder = BUNGALOW_MIN_PRICE;
       break;
   }
 }
 
 const onTimeinChange = function () {
-  timeoutElement.value = timeinElement.value;
+  timeoutElem.value = timeinElem.value;
 }
 
 const onTimeoutChange = function () {
-  timeinElement.value = timeoutElement.value;
+  timeinElem.value = timeoutElem.value;
 }
 
-typeElement.addEventListener('change', onTypeChange);
-timeinElement.addEventListener('change', onTimeinChange);
-timeoutElement.addEventListener('change', onTimeoutChange);
+typeElem.addEventListener('change', onTypeChange);
+timeinElem.addEventListener('change', onTimeinChange);
+timeoutElem.addEventListener('change', onTimeoutChange);
 
 onTypeChange();
 onTimeinChange();
+
+const updateAddress = ({lat, lng}) => {
+  addressElem.value = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+};
+
+export { disableNoticeForm, updateAddress };

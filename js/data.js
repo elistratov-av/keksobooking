@@ -78,7 +78,7 @@ const createAuthor = (i) => {
 const createOffer = (location) => {
   return {
     title: getRandomArrayElem(TITLES),
-    address: location.x + ', ' + location.y,
+    address: location.lat + ', ' + location.lng,
     price: getRandomInt(Price.MIN, Price.MAX),
     type: getRandomArrayElem(TYPES),
     rooms: getRandomInt(RoomsCount.MIN, RoomsCount.MAX),
@@ -93,8 +93,8 @@ const createOffer = (location) => {
 
 const createLocation = () => {
   return {
-    x: getRandomFloat(Latitude.MIN, Latitude.MAX, COORD_DIGITS),
-    y: getRandomFloat(Longitude.MIN, Longitude.MAX, COORD_DIGITS),
+    lat: getRandomFloat(Latitude.MIN, Latitude.MAX, COORD_DIGITS),
+    lng: getRandomFloat(Longitude.MIN, Longitude.MAX, COORD_DIGITS),
   };
 };
 

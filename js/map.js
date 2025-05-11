@@ -1,8 +1,10 @@
 import {disableNoticeForm, updateAddress} from './notice.js';
-import {generateOffers} from './data.js';
 import {renderCard} from './card.js';
+import {getOffers} from './api.js';
+import {showAlert} from './msgdlg.js';
 /* global L:readonly */
 
+const OFFERS_MAX_COUNT = 10;
 const START_ZOOM = 12;
 
 // Начальная точка - центр карты
@@ -44,7 +46,11 @@ const disableFiltersForm = (disabled) => {
   for (let i = 0; i < elems.length; ++i) {
     elems[i].disabled = disabled;
   }
-}
+};
+
+const resetFiltersForm = () => {
+  filtersForm.reset();
+};
 
 const disableMapPage = (disabled) => {
   disableFiltersForm(disabled);
@@ -98,6 +104,8 @@ const createMainPinMarker = () => {
   });
 
   updateAddress(mainPinMarker.getLatLng());
+
+  return mainPinMarker;
 };
 
 const createPinMarkers = (offers) => {
@@ -110,12 +118,12 @@ const createPinMarkers = (offers) => {
   });
 
   offers.forEach((offerData) => {
-    const {x, y} = offerData.location;
+    const {lat, lng} = offerData.location;
 
     const marker = L.marker(
       {
-        lat: x,
-        lng: y,
+        lat,
+        lng,
       },
       {
         draggable: false,
@@ -128,8 +136,28 @@ const createPinMarkers = (offers) => {
         renderCard(offerData),
       );
   });
-}
+};
+
+const loadOffers = () => {
+  getOffers()
+    .then((offers) => {
+      createPinMarkers(offers.slice(0, OFFERS_MAX_COUNT));
+    })
+    .catch((err) => {
+      showAlert(err.message);
+    });
+};
+
+const resetMainPinMarker = () => {
+  const centerPoint = {
+    lat: MapCenter.LAT,
+    lng: MapCenter.LNG,
+  };
+  mainPinMarker.setLatLng(centerPoint);
+  updateAddress(mainPinMarker.getLatLng());
+};
 
 const map = createMap();
-createMainPinMarker();
-createPinMarkers(generateOffers());
+const mainPinMarker = createMainPinMarker();
+
+export { loadOffers, resetFiltersForm, resetMainPinMarker };

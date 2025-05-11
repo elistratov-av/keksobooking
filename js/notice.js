@@ -1,3 +1,6 @@
+import {publishOffer} from './api.js';
+import {showError, showSuccess} from './msgdlg.js';
+
 const PALACE_MIN_PRICE = 10000;
 const FLAT_MIN_PRICE = 1000;
 const HOUSE_MIN_PRICE = 5000;
@@ -24,7 +27,11 @@ const disableNoticeForm = (disabled) => {
   for (let i = 0; i < elems.length; ++i) {
     elems[i].disabled = disabled;
   }
-}
+};
+
+const resetNoticeForm = () => {
+  noticeForm.reset();
+};
 
 const onTypeChange = function () {
   const type = typeElem.value;
@@ -109,9 +116,23 @@ roomNumberElem.addEventListener('change', onValidateCapacity);
 capacityElem.addEventListener('change', onValidateCapacity);
 
 noticeForm.addEventListener('submit', (evt) => {
+  evt.preventDefault();
   if (!validateCapacityByRoomNum(capacityElem, roomNumberElem)) {
-    evt.preventDefault();
+    return;
   }
+  const formData = new FormData(evt.target);
+  publishOffer(formData)
+    .then(() => {
+      noticeForm.reset();
+      showSuccess();
+    })
+    .catch(() => {
+      showError();
+    });
 });
 
-export { disableNoticeForm, updateAddress };
+const setNoticeFormReset = (cb) => {
+  noticeForm.addEventListener('reset', cb);
+};
+
+export { disableNoticeForm, resetNoticeForm, updateAddress, setNoticeFormReset };

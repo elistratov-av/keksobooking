@@ -45,4 +45,12 @@ const zfill = (num, places) => {
   return zeroesCount > 0 ? (new Array(zeroesCount + 1)).join('0') + num : '' + num;
 }
 
-export { getRandomInt, getRandomFloat, getRandomArrayElem, shuffle, zfill };
+const isEscPressed = (evt) => {
+  return evt.key === 'Escape' || evt.key === 'Esc';
+};
+
+const isEnterPressed = (evt) => {
+  return evt.key === 'Enter';
+};
+
+export { getRandomInt, getRandomFloat, getRandomArrayElem, shuffle, zfill, isEscPressed, isEnterPressed };

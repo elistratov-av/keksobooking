@@ -1,5 +1,7 @@
 import {publishOffer} from './api.js';
 import {showError, showSuccess} from './msgdlg.js';
+import {resetAvatar} from './avatar.js';
+import {resetPhoto} from './photo.js';
 
 const PALACE_MIN_PRICE = 10000;
 const FLAT_MIN_PRICE = 1000;
@@ -29,8 +31,9 @@ const disableNoticeForm = (disabled) => {
   }
 };
 
-const resetNoticeForm = () => {
-  noticeForm.reset();
+const resetNoticePreviews = () => {
+  resetAvatar();
+  resetPhoto();
 };
 
 const onTypeChange = function () {
@@ -135,4 +138,4 @@ const setNoticeFormReset = (cb) => {
   noticeForm.addEventListener('reset', cb);
 };
 
-export { disableNoticeForm, resetNoticeForm, updateAddress, setNoticeFormReset };
+export { disableNoticeForm, resetNoticePreviews, updateAddress, setNoticeFormReset };

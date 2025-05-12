@@ -579,6 +579,10 @@ fieldset {
 
   background-color: #e4e4de;
   border-radius: 5px;
+
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: contain;
 }
 
 .ad-form__element--submit {

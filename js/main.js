@@ -1,10 +1,9 @@
-import {loadOffers, resetFiltersForm, resetMainPinMarker} from './map.js';
 import {setLogger} from './api.js';
+import {loadOffers, resetMap} from './map.js';
 import {setNoticeFormReset} from './notice.js';
 
 setLogger(console);
-loadOffers();
 setNoticeFormReset(() => {
-  resetFiltersForm();
-  setTimeout(resetMainPinMarker, 0);
+  resetMap();
 });
+loadOffers();

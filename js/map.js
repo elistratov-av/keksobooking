@@ -2,6 +2,8 @@ import {disableNoticeForm, updateAddress} from './notice.js';
 import {renderCard} from './card.js';
 import {getOffers} from './api.js';
 import {showAlert} from './msgdlg.js';
+import {getOfferFilter} from './filter.js';
+import {debounce} from './util.js';
 /* global L:readonly */
 
 const OFFERS_MAX_COUNT = 10;
@@ -48,21 +50,25 @@ const disableFiltersForm = (disabled) => {
   }
 };
 
-const resetFiltersForm = () => {
-  filtersForm.reset();
-};
-
-const disableMapPage = (disabled) => {
+const disableMap = (disabled) => {
   disableFiltersForm(disabled);
   disableNoticeForm(disabled);
 };
 
+const resetMap = () => {
+  filtersForm.reset();
+  setTimeout(() => {
+    resetMainPinMarker();
+    updateOffersDebounced();
+  }, 0);
+};
+
 const createMap = () => {
-  disableMapPage(true);
+  disableMap(true);
 
   const map = L.map('map-canvas')
     .on('load', () => {
-      disableMapPage(false);
+      disableMap(false);
     })
     .setView({
       lat: MapCenter.LAT,
@@ -105,7 +111,19 @@ const createMainPinMarker = () => {
 
   updateAddress(mainPinMarker.getLatLng());
 
+  const typeFilterElem = filtersForm.querySelector('#housing-type');
+  typeFilterElem.addEventListener('change', updateOffersDebounced);
+
   return mainPinMarker;
+};
+
+const resetMainPinMarker = () => {
+  const centerPoint = {
+    lat: MapCenter.LAT,
+    lng: MapCenter.LNG,
+  };
+  mainPinMarker.setLatLng(centerPoint);
+  updateAddress(mainPinMarker.getLatLng());
 };
 
 const createPinMarkers = (offers) => {
@@ -131,6 +149,8 @@ const createPinMarkers = (offers) => {
       },
     );
 
+    markers.push(marker);
+
     marker.addTo(map)
       .bindPopup(
         renderCard(offerData),
@@ -138,26 +158,36 @@ const createPinMarkers = (offers) => {
   });
 };
 
+const clearPinMarkers = () => {
+  for (let i = 0; i < markers.length; ++i) {
+    markers[i].remove();
+  }
+  markers = [];
+};
+
 const loadOffers = () => {
   getOffers()
-    .then((offers) => {
-      createPinMarkers(offers.slice(0, OFFERS_MAX_COUNT));
-    })
+    .then(createOffers)
     .catch((err) => {
       showAlert(err.message);
     });
 };
 
-const resetMainPinMarker = () => {
-  const centerPoint = {
-    lat: MapCenter.LAT,
-    lng: MapCenter.LNG,
-  };
-  mainPinMarker.setLatLng(centerPoint);
-  updateAddress(mainPinMarker.getLatLng());
+const createOffers = (data) => {
+  offers = data;
+  createPinMarkers(offers.slice(0, OFFERS_MAX_COUNT));
 };
 
+const updateOffers = () => {
+  clearPinMarkers();
+  createPinMarkers(offers.filter(getOfferFilter()).slice(0, OFFERS_MAX_COUNT));
+};
+
+let offers = [];
+let markers = [];
+
+const updateOffersDebounced = debounce(updateOffers);
 const map = createMap();
 const mainPinMarker = createMainPinMarker();
 
-export { loadOffers, resetFiltersForm, resetMainPinMarker };
+export { loadOffers, resetMap };

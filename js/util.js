@@ -1,3 +1,5 @@
+const DEBOUNCE_INTERVAL = 500
+
 const getRandomInt = (min, max) => {
   if (min < 0 || max < 0) {
     return -1;
@@ -53,4 +55,17 @@ const isEnterPressed = (evt) => {
   return evt.key === 'Enter';
 };
 
-export { getRandomInt, getRandomFloat, getRandomArrayElem, shuffle, zfill, isEscPressed, isEnterPressed };
+const debounce = (cb) => {
+  let lastTimeout = null;
+
+  return (...args) => {
+    if (lastTimeout) {
+      window.clearTimeout(lastTimeout);
+    }
+    lastTimeout = window.setTimeout(() => {
+      cb(...args);
+    }, DEBOUNCE_INTERVAL);
+  };
+};
+
+export { getRandomInt, getRandomFloat, getRandomArrayElem, shuffle, zfill, isEscPressed, isEnterPressed, debounce };

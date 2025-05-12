@@ -82,6 +82,21 @@ const createMap = () => {
     },
   ).addTo(map);
 
+  const typeFilterElem = filtersForm.querySelector('#housing-type');
+  typeFilterElem.addEventListener('change', updateOffersDebounced);
+
+  const priceFilterElem = filtersForm.querySelector('#housing-price');
+  priceFilterElem.addEventListener('change', updateOffersDebounced);
+
+  const roomsFilterElem = filtersForm.querySelector('#housing-rooms');
+  roomsFilterElem.addEventListener('change', updateOffersDebounced);
+
+  const guestsFilterElem = filtersForm.querySelector('#housing-guests');
+  guestsFilterElem.addEventListener('change', updateOffersDebounced);
+
+  const featuresFilterContainer = filtersForm.querySelector('#housing-features');
+  featuresFilterContainer.addEventListener('change', updateOffersDebounced);
+
   return map;
 };
 
@@ -110,9 +125,6 @@ const createMainPinMarker = () => {
   });
 
   updateAddress(mainPinMarker.getLatLng());
-
-  const typeFilterElem = filtersForm.querySelector('#housing-type');
-  typeFilterElem.addEventListener('change', updateOffersDebounced);
 
   return mainPinMarker;
 };
